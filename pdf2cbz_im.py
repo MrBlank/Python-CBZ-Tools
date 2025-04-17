@@ -252,6 +252,7 @@ def convert_pdf_to_images(pdf_path, output_dir, dpi=DEFAULT_DPI, quality=DEFAULT
 
 @handle_keyboard_interrupt()
 def convert_pdf_to_cbz(pdf_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
+    start_time = time.time()
     cbz_path = pdf_path.with_suffix(".cbz")
     print(f"🔁 Converting: {pdf_path.name} → {cbz_path.name} at {dpi} DPI, quality {quality}")
 
@@ -280,7 +281,11 @@ def convert_pdf_to_cbz(pdf_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
             stop_event.set()
             spin_thread.join()
 
-    print(f"✅ Created: {cbz_path.name}")
+    end_time = time.time()
+    duration = end_time - start_time
+    minutes = int(duration // 60)
+    seconds = int(duration % 60)
+    print(f"✅ Created: {cbz_path.name} ({minutes}m {seconds}s)")
 
 @handle_keyboard_interrupt("Batch conversion cancelled by user.")
 def process_path(target_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
