@@ -23,6 +23,7 @@ Both scripts offer:
 - Automatic virtual environment setup
 - Progress indicators with spinners
 - Batch processing of multiple PDFs in a single folder
+- Multi-core support for fast processing of files
 
 ## Requirements
 

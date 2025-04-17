@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import os
 import sys
 import subprocess
@@ -55,7 +55,7 @@ def in_virtualenv():
 def setup_virtualenv():
     if not VENV_DIR.exists():
         print("📦 Creating virtual environment...")
-        subprocess.run([sys.executable, "-m", "venv", str(VENV_DIR)], check=True)
+        subprocess.run(["python", "-m", "venv", str(VENV_DIR)], check=True)
 
     try:
         subprocess.run([str(VENV_PYTHON), "-c", "import tqdm"], check=True, stdout=subprocess.DEVNULL)
