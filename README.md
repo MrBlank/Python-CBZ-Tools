@@ -91,6 +91,6 @@ For optimizing CBZ files for e-readers, [check out KCC](https://github.com/cirom
 
 ## Disclaimer
 
-This plugin is provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any damage or data loss that may occur through the use of this plugin.
+This script is provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any damage or data loss that may occur through the use of this plugin.
 
-This tool is intended for converting legally obtained EPUB files that you own. Please respect copyright laws and only convert materials you have the right to access.
+This tool is intended for converting legally obtained files that you own. Please respect copyright laws and only convert materials you have the right to access.
