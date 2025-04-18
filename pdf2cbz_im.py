@@ -65,8 +65,12 @@ def setup_virtualenv():
 
 def check_dependencies():
     if not shutil.which("magick"):
-        print("❌ ImageMagick not found in PATH. Please install it.")
+        print("❌ ImageMagick not found. Please install.")
         print("👉 On macOS: brew install imagemagick")
+        sys.exit(1)
+    if not shutil.which("gs"):
+        print("❌ Ghostscript (gs) not found. Please install.")
+        print("👉 On macOS: brew install ghostscript")
         sys.exit(1)
 
 def spinner(message, stop_event):
@@ -261,7 +265,7 @@ def convert_pdf_to_cbz(pdf_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
         padding_width = convert_pdf_to_images(pdf_path, temp_dir_path, dpi, quality)
 
         # Sort files by creation time to maintain page order
-        image_files = sorted(temp_dir_path.glob("*.jpg"), key=lambda x: x.stat().st_mtime)
+        image_files = sorted(temp_dir_path.glob("*.jpg"), key=lambda x: x.name)
         if not image_files:
             print("❌ No images were generated. Conversion failed.")
             return

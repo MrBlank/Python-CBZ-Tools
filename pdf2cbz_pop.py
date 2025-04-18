@@ -63,7 +63,7 @@ def setup_virtualenv():
 
 def check_dependencies():
     if not shutil.which("pdfinfo"):
-        print("❌ Poppler not found in PATH. Please install it.")
+        print("❌ Poppler not found. Please install.")
         print("👉 On macOS: brew install poppler")
         sys.exit(1)
 
@@ -247,7 +247,7 @@ def convert_pdf_to_cbz(pdf_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
         padding_width = convert_pdf_to_images(pdf_path, temp_dir_path, dpi, quality)
 
         # Sort files by creation time to maintain page order
-        image_files = sorted(temp_dir_path.glob("*.jpg"), key=lambda x: x.stat().st_mtime)
+        image_files = sorted(temp_dir_path.glob("*.jpg"), key=lambda x: x.name)
         if not image_files:
             print("❌ No images were generated. Conversion failed.")
             return

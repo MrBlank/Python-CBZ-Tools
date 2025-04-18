@@ -30,19 +30,23 @@ Both scripts offer:
 Both scripts automatically set up their own virtual environments and install required Python packages. However, they need certain system-level dependencies to be installed first:
 
 ### For ImageMagick version (`pdf2cbz_im.py`)
-Requires ImageMagick to be installed on your system:
+Requires **both ImageMagick and Ghostscript** to be installed on your system:
+
+#### Install ImageMagick and Ghostscript:
 ```bash
 # macOS
-brew install imagemagick
+brew install imagemagick ghostscript
 
 # Ubuntu/Debian
-sudo apt-get install imagemagick
+sudo apt-get install imagemagick ghostscript
 
 # Fedora
-sudo dnf install ImageMagick
+sudo dnf install ImageMagick ghostscript
 
 # Windows
-# Download installer from https://imagemagick.org/script/download.php
+# Download and install both:
+# - ImageMagick: https://imagemagick.org/script/download.php
+# - Ghostscript: https://ghostscript.com/download/gsdnld.html
 ```
 
 ### For pdf2image version (`pdf2cbz_pop.py`)
