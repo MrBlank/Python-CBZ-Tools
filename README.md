@@ -8,7 +8,7 @@ Python scripts for converting EPUB or PDF files to CBZ (Comic Book ZIP) format.
 
 ### Features
 - Converts EPUB files (single or batch) to CBZ (Comic Book ZIP) format
-- Ports EPUB meta to the CBZ's ComicInfo.xml 
+- Ports EPUB metadata to the CBZ's ComicInfo.xml 
 - Preserves reading order of images as in the original EPUB
 - Automatically sets up and uses a Python virtual environment for dependencies
 
