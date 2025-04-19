@@ -1,8 +1,44 @@
-# PDF to CBZ Conversion Tools
+# CBZ Conversion Tools
 
-Two Python scripts for converting PDF files to CBZ (Comic Book ZIP) format, with different conversion engines for flexibility and performance.
+Python scripts for converting EPUB or PDF files to CBZ (Comic Book ZIP) format.
 
-## Scripts
+---
+
+## EPUB 2 CBZ Script
+
+### Features
+- Converts EPUB files (single or batch) to CBZ (Comic Book ZIP) format
+- Preserves reading order of images as in the original EPUB
+- Automatically sets up and uses a Python virtual environment for dependencies
+
+### Requirements
+- Python 3.7+
+- The script automatically creates and manages a virtual environment and installs required Python packages (`beautifulsoup4`, `lxml`).
+- No additional system-level dependencies required for basic EPUB to CBZ conversion.
+
+### Usage
+Convert a single EPUB file:
+```bash
+python epub2cbz.py /path/to/book.epub
+```
+
+Convert all EPUB files in a folder:
+```bash
+python epub2cbz.py /path/to/folder_with_epubs
+```
+
+Specify an output directory (optional):
+```bash
+python epub2cbz.py /path/to/book.epub -o /path/to/output_folder
+```
+
+### Options
+- `-o`, `--output [folder]`: Set output folder for CBZ files (defaults to the EPUB's folder)
+- `--help`: Show help message
+
+---
+
+## PDF 2 CBZ Scripts
 
 ### 1. `pdf2cbz_im.py` (ImageMagick Version)
 Uses ImageMagick for PDF to image conversion. Features:
@@ -16,23 +52,21 @@ Uses pdf2image (poppler-based) for conversion. Features:
 - Lighter on system resources
 - Requires Poppler installation
 
-## Features
+### Features
 Both scripts offer:
+- Converts PDF files (single or batch) to CBZ (Comic Book ZIP) format
 - Configurable DPI (default: 300, max: 900)
 - Adjustable JPEG quality (default: 85, max: 100)
 - Automatic virtual environment setup
 - Progress indicators with spinners
-- Batch processing of multiple PDFs in a single folder
 - Multi-core support for fast processing of files
 
-## Requirements
-
+### Requirements
 Both scripts automatically set up their own virtual environments and install required Python packages. However, they need certain system-level dependencies to be installed first:
 
 ### For ImageMagick version (`pdf2cbz_im.py`)
 Requires **both ImageMagick and Ghostscript** to be installed on your system:
 
-#### Install ImageMagick and Ghostscript:
 ```bash
 # macOS
 brew install imagemagick ghostscript
@@ -50,7 +84,7 @@ sudo dnf install ImageMagick ghostscript
 ```
 
 ### For pdf2image version (`pdf2cbz_pop.py`)
-Requires Poppler to be installed on your system:
+Requires Poppler:
 ```bash
 # macOS
 brew install poppler
@@ -66,7 +100,7 @@ sudo dnf install poppler-utils
 # Add the bin/ folder to your PATH
 ```
 
-## Usage
+### Usage
 
 Both scripts use the same command-line interface:
 
@@ -84,17 +118,22 @@ python pdf2cbz_im.py mycomic.pdf --dpi 600 --quality 90
 python pdf2cbz_pop.py mycomic.pdf --dpi 600 --quality 90
 ```
 
-## Options
+### Options
+
 - `--dpi [number]`: Set image resolution (default: 300, max: 900)
 - `--quality [1-100]`: Set JPEG quality (default: 85)
 - `--help`: Show help message
 
+---
+
 ## Notes
 
-For optimizing CBZ files for e-readers, [check out KCC](https://github.com/ciromattia/kcc).
+For optimizing CBZ files for e-readers, [check out KCC][1].
 
 ## Disclaimer
 
-This script is provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any damage or data loss that may occur through the use of this plugin.
+These scripts are provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any damage or data loss that may occur through the use of this plugin.
 
 This tool is intended for converting legally obtained files that you own. Please respect copyright laws and only convert materials you have the right to access.
+
+[1]:	https://github.com/ciromattia/kcc
