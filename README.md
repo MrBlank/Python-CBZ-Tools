@@ -8,6 +8,7 @@ Python scripts for converting EPUB or PDF files to CBZ (Comic Book ZIP) format.
 
 ### Features
 - Converts EPUB files (single or batch) to CBZ (Comic Book ZIP) format
+- Ports EPUB meta to the CBZ's ComicInfo.xml 
 - Preserves reading order of images as in the original EPUB
 - Automatically sets up and uses a Python virtual environment for dependencies
 
@@ -34,7 +35,15 @@ python epub2cbz.py /path/to/book.epub -o /path/to/output_folder
 
 ### Options
 - `-o`, `--output [folder]`: Set output folder for CBZ files (defaults to the EPUB's folder)
+- `--ltr`: Set reading direction to LeftToRight (Western style, default)
+- `--rtl`: Set reading direction to RightToLeft (manga style)
+- `--vertical`: Set reading direction to Vertical
 - `--help`: Show help message
+
+If multiple direction flags (`--ltr`, `--rtl`, `--vertical`) are used, the last one specified takes precedence. By default, the reading direction is `LeftToRight` unless another is set.
+
+#### ComicInfo.xml Metadata
+- The script generates a `ComicInfo.xml` file inside each CBZ, containing metadata such as title, series, author, publisher, language, summary, date, and reading direction for compatibility with most comic readers.
 
 ---
 
