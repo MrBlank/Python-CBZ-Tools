@@ -2,7 +2,7 @@
 
 I prefer my comics to be in a CBZ format for editing, compatability, and portability. These are my Python scripts for converting EPUB or PDF files to CBZ (Comic Book ZIP) format. 
 
-Once I have the files converted to CBZ and in my library, I use [Kindle Comic Converter (KCC)][1] to optimize and size the CBZ files before trasferring a copy to varios e-readers, like BOOX, Kindle, or Kobo devices.
+Once I have the files converted to CBZ and in my library, I use [Kindle Comic Converter (KCC)][1] to optimize and size the CBZ files before trasferring a copy to various e-readers, like BOOX, Kindle, or Kobo devices.
 
 ---
 
