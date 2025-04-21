@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import shutil
 from pathlib import Path
 
 # --- VENV & DEPENDENCY MANAGEMENT (auto) ---
@@ -99,6 +98,18 @@ def parse_opf(opf_path: Path):
         item_id = item.attrib["id"]
         href = item.attrib["href"]
         manifest[item_id] = href
+    # Extract spine and check for reading direction
+    spine_elem = root.find('.//{*}spine')
+    if spine_elem is not None and 'page-progression-direction' in spine_elem.attrib:
+        ppd = spine_elem.attrib['page-progression-direction']
+        if ppd.lower() == 'rtl':
+            metadata['reading_direction'] = 'RightToLeft'
+        elif ppd.lower() == 'ltr':
+            metadata['reading_direction'] = 'LeftToRight'
+        elif ppd.lower() == 'vertical':
+            metadata['reading_direction'] = 'Vertical'
+        else:
+            metadata['reading_direction'] = ppd  # fallback to raw value
     for itemref in root.findall(".//{*}spine/{*}itemref"):
         spine.append(itemref.attrib["idref"])
     for meta in root.findall(".//{*}meta"):
@@ -187,8 +198,11 @@ def process_epub(epub_path: Path, output_dir: Path, reading_direction: str = "Le
         spine_files = [opf_path.parent / manifest[item] for item in spine if item in manifest]
         images = resolve_image_paths(spine_files, tmpdir)
 
-        # Build ComicInfo.xml
-        comicinfo_xml = build_comicinfo_xml(metadata, reading_direction=reading_direction)
+        # Prefer reading direction from EPUB metadata if present
+        rd = metadata.get('reading_direction', reading_direction)
+        
+        # Build comicInfo.xml
+        comicinfo_xml = build_comicinfo_xml(metadata, reading_direction=rd)
         output_cbz = output_dir / (epub_path.stem + ".cbz")
         build_cbz(images, output_cbz, comicinfo_xml=comicinfo_xml)
         print(f"✅ Created {output_cbz.name} ({len(images)} images)")

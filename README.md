@@ -35,12 +35,12 @@ python epub2cbz.py /path/to/book.epub -o /path/to/output_folder
 
 ### Options
 - `-o`, `--output [folder]`: Set output folder for CBZ files (defaults to the EPUB's folder)
+- `--help`: Show help message  
 - `--ltr`: Set reading direction to LeftToRight (Western style, default)
 - `--rtl`: Set reading direction to RightToLeft (manga style)
 - `--vertical`: Set reading direction to Vertical
-- `--help`: Show help message
-
-If multiple direction flags (`--ltr`, `--rtl`, `--vertical`) are used, the last one specified takes precedence. By default, the reading direction is `LeftToRight` unless another is set.
+  
+__Note:__ If the EPUB file specifies a reading direction, that direction will be used and any direction flags (`--ltr`, `--rtl`, `--vertical`) will be ignored. If the EPUB does not specify a reading direction, `LeftToRight` is used by default, unless you provide a direction flag.
 
 #### ComicInfo.xml Metadata
 - The script generates a `ComicInfo.xml` file inside each CBZ, containing metadata such as title, series, author, publisher, language, summary, date, and reading direction for compatibility with most comic readers.
