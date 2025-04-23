@@ -51,20 +51,32 @@ __Note:__ If the EPUB file specifies a reading direction, that direction will be
 
 ## PDF 2 CBZ Scripts
 
-### 1. `pdf2cbz_im.py` (ImageMagick Version)
-Uses ImageMagick for PDF to image conversion. Features:
-- Advanced image manipulation capabilities
-- Better suited for complex PDFs
-- Requires ImageMagick installation
+### 1. `pdf2cbz.py` (MuPDF/PyMuPDF Version)
+Uses MuPDF (PyMuPDF) for high-quality, fast PDF rendering and conversion. Features:
+- Very fast, especially for large PDFs (multiprocessing)
+- High-quality rendering (excellent text and image fidelity)
+- No external system dependencies (auto-installs Python packages: `pymupdf`, `Pillow`, `tqdm`)
+- Best choice for speed, quality, and ease of setup if you have Python 3.8+
 
 ### 2. `pdf2cbz_pop.py` (pdf2image Version)
-Uses pdf2image (poppler-based) for conversion. Features:
-- Generally faster conversion
+Uses pdf2image (Poppler-based) for conversion. Features:
+- Generally faster conversion than ImageMagick for most PDFs
 - Lighter on system resources
 - Requires Poppler installation
 
+### 3. `pdf2cbz_im.py` (ImageMagick Version)
+Uses ImageMagick for PDF to image conversion. Features:
+- Advanced image manipulation capabilities
+- Better suited for complex or problematic PDFs
+- Requires ImageMagick (and Ghostscript) installation
+
+**Summary:**
+- Use **MuPDF** for the fastest, highest-quality conversion with minimal setup.
+- Use **pdf2image/Poppler** if you already have Poppler and want a lightweight solution.
+- Use **ImageMagick** if you need advanced image processing or have problematic/complex PDFs.
+
 ### Features
-Both scripts offer:
+All scripts offer:
 - Converts PDF files (single or batch) to CBZ (Comic Book ZIP) format
 - Configurable DPI (default: 300, max: 900)
 - Adjustable JPEG quality (default: 85, max: 100)
@@ -73,7 +85,10 @@ Both scripts offer:
 - Multi-core support for fast processing of files
 
 ### Requirements
-Both scripts automatically set up their own virtual environments and install required Python packages. However, they need certain system-level dependencies to be installed first:
+All scripts automatically set up their own virtual environments and install required Python packages. However, some need certain system-level dependencies to be installed first:
+
+### For MuPDF version (`pdf2cbz.py`)
+No system-level dependencies required! All necessary Python packages (`pymupdf`, `Pillow`, `tqdm`) are automatically installed in a virtual environment when you run the script. Just make sure you have Python 3.8 or higher.
 
 ### For ImageMagick version (`pdf2cbz_im.py`)
 Requires **both ImageMagick and Ghostscript** to be installed on your system:
@@ -117,16 +132,19 @@ Both scripts use the same command-line interface:
 
 ```bash
 # Convert a single PDF
-python pdf2cbz_im.py mycomic.pdf
+python pdf2cbz.py mycomic.pdf
 python pdf2cbz_pop.py mycomic.pdf
+python pdf2cbz_im.py mycomic.pdf
 
 # Convert all PDFs in current directory
-python pdf2cbz_im.py .
+python pdf2cbz.py .
 python pdf2cbz_pop.py .
+python pdf2cbz_im.py .
 
 # Set custom DPI and quality
-python pdf2cbz_im.py mycomic.pdf --dpi 600 --quality 90
+python pdf2cbz.py mycomic.pdf --dpi 600 --quality 90
 python pdf2cbz_pop.py mycomic.pdf --dpi 600 --quality 90
+python pdf2cbz_im.py mycomic.pdf --dpi 600 --quality 90
 ```
 
 ### Options

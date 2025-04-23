@@ -7,6 +7,10 @@
 *.kpf
 *.mobi
 
+# Ignore folders for source files
+pdf/
+epub/
+
 # Python
 __pycache__/
 *.py[cod]
