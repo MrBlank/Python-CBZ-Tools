@@ -55,8 +55,9 @@ def spinner(message, stop_event, printed_event=None):
         i += 1
     print("\r" + " " * (len(message) + 4) + "\r", end="")
 
-def process_cbr(cbr_path: Path, output_dir: Path, show_progress=True):
+def process_cbr(cbr_path: Path, output_dir: Path, show_progress=True, move_processed=False, processed_folder="cbz_processed", move_cbr=False, cbr_folder="cbr_processed"):
     import math
+    import shutil
     output_cbz = output_dir / (cbr_path.stem + ".cbz")
     with tempfile.TemporaryDirectory() as tmpdirname:
         tmpdir = Path(tmpdirname)
@@ -82,6 +83,19 @@ def process_cbr(cbr_path: Path, output_dir: Path, show_progress=True):
                 if show_progress:
                     stop_event.set()
                     spin_thread.join()
+                # Move to processed folder if requested
+                if move_processed:
+                    processed_dir = output_dir / processed_folder
+                    processed_dir.mkdir(exist_ok=True)
+                    new_path = processed_dir / output_cbz.name
+                    shutil.move(str(output_cbz), str(new_path))
+                    output_cbz = new_path
+                # Move CBR if requested
+                if move_cbr:
+                    cbr_dir = cbr_path.parent / cbr_folder
+                    cbr_dir.mkdir(exist_ok=True)
+                    new_cbr_path = cbr_dir / cbr_path.name
+                    shutil.move(str(cbr_path), str(new_cbr_path))
                 # Format time as mm:ss if >= 60s, else as x.y s
                 if elapsed >= 60:
                     mins = int(elapsed // 60)
@@ -93,16 +107,16 @@ def process_cbr(cbr_path: Path, output_dir: Path, show_progress=True):
         except rarfile.Error as e:
             print(f"❌ ERROR: Failed to extract {cbr_path.name}: {e}")
 
-def worker_process_cbr(cbr_path_str, output_dir_str):
+def worker_process_cbr(cbr_path_str, output_dir_str, move_processed=False, processed_folder="cbz_processed", move_cbr=False, cbr_folder="cbr_processed"):
     from pathlib import Path
     cbr_path = Path(cbr_path_str)
     output_dir = Path(output_dir_str)
     print(f"🔁 Processing {cbr_path.name}")
-    process_cbr(cbr_path, output_dir, show_progress=False)
+    process_cbr(cbr_path, output_dir, show_progress=False, move_processed=move_processed, processed_folder=processed_folder, move_cbr=move_cbr, cbr_folder=cbr_folder)
 
 from multiprocessing import Manager
 
-def worker_process_cbr_capture(cbr_path_str, output_dir_str, result_queue):
+def worker_process_cbr_capture(cbr_path_str, output_dir_str, result_queue, move_processed=False, processed_folder="cbz_processed", move_cbr=False, cbr_folder="cbr_processed"):
     from pathlib import Path
     import sys
     import time
@@ -114,14 +128,14 @@ def worker_process_cbr_capture(cbr_path_str, output_dir_str, result_queue):
     sys_stdout = sys.stdout
     sys.stdout = buf
     try:
-        process_cbr(cbr_path, output_dir, show_progress=False)
+        process_cbr(cbr_path, output_dir, show_progress=False, move_processed=move_processed, processed_folder=processed_folder, move_cbr=move_cbr, cbr_folder=cbr_folder)
     finally:
         sys.stdout = sys_stdout
     result = buf.getvalue()
     if result.strip():
         result_queue.put((str(cbr_path.name), result.strip()))
 
-def batch_convert_cbrs(cbr_dir: Path, output_dir: Path, max_workers=None):
+def batch_convert_cbrs(cbr_dir: Path, output_dir: Path, max_workers=None, move_processed=False, processed_folder="cbz_processed", move_cbr=False, cbr_folder="cbr_processed"):
     import queue
     import threading
     import sys
@@ -162,7 +176,7 @@ def batch_convert_cbrs(cbr_dir: Path, output_dir: Path, max_workers=None):
     printer_thread.start()
     try:
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(worker_process_cbr_capture, str(cbr_path), str(output_dir), result_queue): cbr_path for cbr_path in batch_iter}
+            futures = {executor.submit(worker_process_cbr_capture, str(cbr_path), str(output_dir), result_queue, move_processed, processed_folder, move_cbr, cbr_folder): cbr_path for cbr_path in batch_iter}
             for future in as_completed(futures):
                 try:
                     future.result()
@@ -176,21 +190,25 @@ def batch_convert_cbrs(cbr_dir: Path, output_dir: Path, max_workers=None):
 def main():
     parser = argparse.ArgumentParser(description="📋 Convert CBR or folder of CBRs to CBZ.")
     parser.add_argument("input", type=str, help="Path to a CBR file or folder of CBRs")
-    parser.add_argument("-o", "--output", type=str, default=None, help="Output folder for CBZ files (defaults to CBR's folder)")
+    parser.add_argument("-m", "--move-processed", nargs="?", const="cbz_processed", default=None, metavar="FOLDER", help="Move processed CBZ files into the specified folder (default: cbz_processed) after conversion")
+    parser.add_argument("-c", "--move-cbr", nargs="?", const="cbr_processed", default=None, metavar="FOLDER", help="Move original CBR files into the specified folder (default: cbr_processed) after conversion")
     args = parser.parse_args()
 
     input_path = Path(args.input)
+    move_processed = args.move_processed is not None
+    processed_folder = args.move_processed if args.move_processed else "cbz_processed"
+    move_cbr = args.move_cbr is not None
+    cbr_folder = args.move_cbr if args.move_cbr else "cbr_processed"
     if input_path.is_file() and input_path.suffix.lower() == ".cbr":
-        output_path = Path(args.output) if args.output else input_path.parent
-        output_path.mkdir(parents=True, exist_ok=True)
+        output_path = input_path.parent
         print(f"🔁 Processing {input_path.name}")
-        process_cbr(input_path, output_path, show_progress=True)
+        process_cbr(input_path, output_path, show_progress=True, move_processed=move_processed, processed_folder=processed_folder, move_cbr=move_cbr, cbr_folder=cbr_folder)
     elif input_path.is_dir():
-        output_path = Path(args.output) if args.output else input_path
-        output_path.mkdir(parents=True, exist_ok=True)
-        batch_convert_cbrs(input_path, output_path)
+        output_path = input_path
+        batch_convert_cbrs(input_path, output_path, move_processed=move_processed, processed_folder=processed_folder, move_cbr=move_cbr, cbr_folder=cbr_folder)
     else:
         print("❌ ERROR: Input must be a .cbr file or a directory containing .cbr files.")
+
 
 if __name__ == "__main__":
     try:

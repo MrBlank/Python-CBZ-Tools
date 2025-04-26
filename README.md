@@ -74,14 +74,29 @@ Convert all CBR files in a folder:
 python cbr2cbz.py /path/to/folder_with_cbrs
 ```
 
-Specify an output directory (optional):
+Move created CBZ files to a subfolder (default: cbz_processed):
 ```bash
-python cbr2cbz.py /path/to/comic.cbr -o /path/to/output_folder
-python cbr2cbz.py /path/to/folder_with_cbrs -o /path/to/output_folder
+python cbr2cbz.py /path/to/folder_with_cbrs -m
+```
+
+Move CBZ files to a custom folder:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder
+```
+
+Move original CBR files after conversion (default: cbr_processed):
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -c
+```
+
+Move both CBZ and CBR files to custom folders:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder -c my_cbr_folder
 ```
 
 ### Options
-- `-o`, `--output [folder]`: Set output folder for CBZ files (defaults to the CBR's folder)
+- `-m`, `--move-processed [FOLDER]`: Move processed CBZ files into the specified folder (default: cbz_processed)
+- `-c`, `--move-cbr [FOLDER]`: Move original CBR files into the specified folder (default: cbr_processed)
 - `--help`: Show help message
 
 ---
