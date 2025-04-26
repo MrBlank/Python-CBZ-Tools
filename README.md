@@ -49,6 +49,43 @@ __Note:__ If the EPUB file specifies a reading direction, that direction will be
 
 ---
 
+## CBR 2 CBZ Script
+
+### Features
+- Converts CBR (Comic Book RAR) files to CBZ (Comic Book ZIP) format
+- Supports batch conversion of all CBR files in a folder
+
+### Requirements
+- Python 3.8 or newer
+- No manual installation required: the script will automatically create and use a virtual environment and install the `rarfile` package
+- UnRAR must be installed for extraction:
+  - **macOS:** `brew install unrar`
+  - **Ubuntu/Debian:** `sudo apt-get install unrar`
+  - **Windows:** Download and install UnRAR from [rarlab.com](https://www.rarlab.com/rar_add.htm)
+
+### Usage
+Convert a single CBR file:
+```bash
+python cbr2cbz.py /path/to/comic.cbr
+```
+
+Convert all CBR files in a folder:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs
+```
+
+Specify an output directory (optional):
+```bash
+python cbr2cbz.py /path/to/comic.cbr -o /path/to/output_folder
+python cbr2cbz.py /path/to/folder_with_cbrs -o /path/to/output_folder
+```
+
+### Options
+- `-o`, `--output [folder]`: Set output folder for CBZ files (defaults to the CBR's folder)
+- `--help`: Show help message
+
+---
+
 ## PDF 2 CBZ Scripts
 
 ### 1. `pdf2cbz.py` (MuPDF/PyMuPDF Version)

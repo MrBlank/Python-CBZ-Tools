@@ -1,6 +1,7 @@
 # Project-specific files
 *.pdf
 *.cbz
+*.cbr
 *.epub
 *.azw3
 *.azw
@@ -10,6 +11,9 @@
 # Ignore folders for source files
 pdf/
 epub/
+
+# BetterZip temp folders (with random suffix)
+.BetterZipTempFolder*/
 
 # Python
 __pycache__/
