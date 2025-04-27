@@ -6,6 +6,10 @@ Once I have the files converted to CBZ and in my library, I use [Kindle Comic Co
 
 ---
 
+[![demo video of the scripts working](https://img.youtube.com/vi/9jAqXVjC2Xw/0.jpg)](https://www.youtube.com/watch?v=9jAqXVjC2Xw)
+
+---
+
 ## EPUB 2 CBZ Script
 
 ### Features
@@ -46,58 +50,6 @@ __Note:__ If the EPUB file specifies a reading direction, that direction will be
 
 #### ComicInfo.xml Metadata
 - The script generates a `ComicInfo.xml` file inside each CBZ, containing metadata such as title, series, author, publisher, language, summary, date, and reading direction for compatibility with most comic readers.
-
----
-
-## CBR 2 CBZ Script
-
-### Features
-- Converts CBR (Comic Book RAR) files to CBZ (Comic Book ZIP) format
-- Supports batch conversion of all CBR files in a folder
-
-### Requirements
-- Python 3.8 or newer
-- No manual installation required: the script will automatically create and use a virtual environment and install the `rarfile` package
-- UnRAR must be installed for extraction:
-  - **macOS:** `brew install unrar`
-  - **Ubuntu/Debian:** `sudo apt-get install unrar`
-  - **Windows:** Download and install UnRAR from [rarlab.com](https://www.rarlab.com/rar_add.htm)
-
-### Usage
-Convert a single CBR file:
-```bash
-python cbr2cbz.py /path/to/comic.cbr
-```
-
-Convert all CBR files in a folder:
-```bash
-python cbr2cbz.py /path/to/folder_with_cbrs
-```
-
-Move created CBZ files to a subfolder (default: cbz_processed):
-```bash
-python cbr2cbz.py /path/to/folder_with_cbrs -m
-```
-
-Move CBZ files to a custom folder:
-```bash
-python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder
-```
-
-Move original CBR files after conversion (default: cbr_processed):
-```bash
-python cbr2cbz.py /path/to/folder_with_cbrs -c
-```
-
-Move both CBZ and CBR files to custom folders:
-```bash
-python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder -c my_cbr_folder
-```
-
-### Options
-- `-m`, `--move-processed [FOLDER]`: Move processed CBZ files into the specified folder (default: cbz_processed)
-- `-c`, `--move-cbr [FOLDER]`: Move original CBR files into the specified folder (default: cbr_processed)
-- `--help`: Show help message
 
 ---
 
@@ -203,6 +155,58 @@ python pdf2cbz_im.py mycomic.pdf --dpi 600 --quality 90
 
 - `--dpi [number]`: Set image resolution (default: 300, max: 900)
 - `--quality [1-100]`: Set JPEG quality (default: 85)
+- `--help`: Show help message
+
+---
+
+## CBR 2 CBZ Script
+
+### Features
+- Converts CBR (Comic Book RAR) files to CBZ (Comic Book ZIP) format
+- Supports batch conversion of all CBR files in a folder
+
+### Requirements
+- Python 3.8 or newer
+- No manual installation required: the script will automatically create and use a virtual environment and install the `rarfile` package
+- UnRAR must be installed for extraction:
+  - **macOS:** `brew install unrar`
+  - **Ubuntu/Debian:** `sudo apt-get install unrar`
+  - **Windows:** Download and install UnRAR from [rarlab.com](https://www.rarlab.com/rar_add.htm)
+
+### Usage
+Convert a single CBR file:
+```bash
+python cbr2cbz.py /path/to/comic.cbr
+```
+
+Convert all CBR files in a folder:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs
+```
+
+Move created CBZ files to a subfolder (default: cbz_processed):
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -m
+```
+
+Move CBZ files to a custom folder:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder
+```
+
+Move original CBR files after conversion (default: cbr_processed):
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -c
+```
+
+Move both CBZ and CBR files to custom folders:
+```bash
+python cbr2cbz.py /path/to/folder_with_cbrs -m my_cbz_folder -c my_cbr_folder
+```
+
+### Options
+- `-m`, `--move-processed [FOLDER]`: Move processed CBZ files into the specified folder (default: cbz_processed)
+- `-c`, `--move-cbr [FOLDER]`: Move original CBR files into the specified folder (default: cbr_processed)
 - `--help`: Show help message
 
 ---
