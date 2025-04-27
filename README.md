@@ -4,8 +4,6 @@ I prefer my comics to be in a CBZ format for editing, compatability, and portabi
 
 Once I have the files converted to CBZ and in my library, I use [Kindle Comic Converter (KCC)][1] to optimize and size the CBZ files before trasferring a copy to various e-readers, like BOOX, Kindle, or Kobo devices.
 
----
-
 [![demo video of the scripts working](https://img.youtube.com/vi/9jAqXVjC2Xw/0.jpg)](https://www.youtube.com/watch?v=9jAqXVjC2Xw)
 
 ---
