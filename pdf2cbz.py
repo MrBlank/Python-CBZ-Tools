@@ -12,6 +12,19 @@ import subprocess
 import shutil
 from functools import wraps
 
+def handle_keyboard_interrupt(message: str = "Conversion cancelled!"):
+    """Decorator to handle keyboard interrupts with a custom message."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except KeyboardInterrupt:
+                print(f"\n🛑 {message}")
+                sys.exit(1)
+        return wrapper
+    return decorator
+
 DEFAULT_DPI = 300
 DEFAULT_QUALITY = 85
 MAX_DPI = 900
@@ -51,6 +64,7 @@ def save_page_as_jpeg_worker(args):
     return output_file
 
 
+@handle_keyboard_interrupt("Conversion cancelled!")
 def convert_pdf_to_images(pdf_path, output_dir, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
     import fitz  # PyMuPDF
     from tqdm import tqdm
@@ -65,22 +79,45 @@ def convert_pdf_to_images(pdf_path, output_dir, dpi=DEFAULT_DPI, quality=DEFAULT
     image_paths = [None] * num_pages
     label = " page" if num_pages == 1 else " pages"
     unit_label = label
+    from concurrent.futures import wait, FIRST_COMPLETED
     with ProcessPoolExecutor() as executor:
         futures = {executor.submit(save_page_as_jpeg_worker, job): idx for idx, job in enumerate(jobs)}
-        for f in tqdm(
-            as_completed(futures),
-            total=num_pages,
-            desc=f"🖼️  Rendering {pdf_path.name}",
-            unit=unit_label
-        ):
-            idx = futures[f]
+        done = set()
+        pbar = tqdm(total=num_pages, desc=f"🖼️  Rendering {pdf_path.name}", unit=unit_label)
+        try:
+            while len(done) < num_pages:
+                finished, _ = wait([f for f in futures if f not in done], timeout=0.2, return_when=FIRST_COMPLETED)
+                for f in finished:
+                    idx = futures[f]
+                    try:
+                        image_paths[idx] = f.result()
+                    except Exception as e:
+                        print(f"❌ Error rendering page {idx+1}: {e}")
+                    done.add(f)
+                    pbar.update(1)
+        except KeyboardInterrupt:
+            pbar.disable = True
+            for f in futures:
+                f.cancel()
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise
+        finally:
             try:
-                image_paths[idx] = f.result()
-            except Exception as e:
-                print(f"❌ Error rendering page {idx+1}: {e}")
+                pbar.close()
+            except Exception:
+                pass
+            try:
+                from tqdm.utils import _term_move_up
+                print(_term_move_up(), end='\r')
+                print(' ' * (pbar.ncols if hasattr(pbar, 'ncols') else 80), end='\r')
+                sys.stdout.flush()
+            except Exception:
+                pass
+
     return image_paths, padding_width
 
 
+@handle_keyboard_interrupt("Conversion cancelled!")
 def convert_pdf_to_cbz(pdf_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
     start_time = time.time()
     cbz_path = pdf_path.with_suffix(".cbz")
@@ -126,6 +163,7 @@ def spinner(message, stop_event):
     print("\r" + " " * (len(message) + 4) + "\r", end="")
 
 
+@handle_keyboard_interrupt("Conversion cancelled!")
 def process_path(target_path, dpi=DEFAULT_DPI, quality=DEFAULT_QUALITY):
     if target_path.is_file() and target_path.suffix.lower() == ".pdf":
         convert_pdf_to_cbz(target_path, dpi, quality)
@@ -163,6 +201,7 @@ Requirements:
 """)
 
 
+@handle_keyboard_interrupt("Conversion cancelled!")
 def main():
     if "--help" in sys.argv or "-h" in sys.argv:
         print_help()
