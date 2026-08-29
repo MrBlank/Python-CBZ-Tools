@@ -5,10 +5,10 @@ from pathlib import Path
 from tqdm import tqdm
 
 # --- VENV & DEPENDENCY MANAGEMENT (auto) ---
-#VENV_DIR = Path("venv")
-#VENV_PYTHON = VENV_DIR / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
+VENV_DIR = Path("venv")
+VENV_PYTHON = VENV_DIR / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
 REQUIRED_PACKAGES = ["beautifulsoup4", "lxml"]
-'''
+
 def in_virtualenv():
     return sys.prefix == str(VENV_DIR.resolve())
 
@@ -33,7 +33,7 @@ def ensure_env():
             sys.exit(1)
 
 ensure_env()
-'''
+
 import zipfile
 import tempfile
 from bs4 import BeautifulSoup
