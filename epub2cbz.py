@@ -2,12 +2,13 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from tqdm import tqdm
 
 # --- VENV & DEPENDENCY MANAGEMENT (auto) ---
-VENV_DIR = Path("venv")
-VENV_PYTHON = VENV_DIR / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
+#VENV_DIR = Path("venv")
+#VENV_PYTHON = VENV_DIR / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
 REQUIRED_PACKAGES = ["beautifulsoup4", "lxml"]
-
+'''
 def in_virtualenv():
     return sys.prefix == str(VENV_DIR.resolve())
 
@@ -32,7 +33,7 @@ def ensure_env():
             sys.exit(1)
 
 ensure_env()
-
+'''
 import zipfile
 import tempfile
 from bs4 import BeautifulSoup
@@ -145,12 +146,13 @@ def resolve_image_paths(spine_files: List[Path], base_dir: Path) -> List[Path]:
             continue
         with open(spine_path, "rb") as f:
             soup = BeautifulSoup(f, features="xml")
-            img_tags = soup.find_all("img")
-            for img in img_tags:
-                src = img.get("src")
-                if not src:
-                    continue
-                img_path = (spine_path.parent / src).resolve()
+            img_paths = set()
+            for tag_name, tag_meta in [("img","src"), ("image","href")]:
+                for tag in soup.find_all(tag_name, href=(tag_meta=="href")):
+                    img_name = tag.get(tag_meta)
+                    if img_name:
+                        img_paths.add((spine_path.parent / img_name).resolve())
+            for img_path in img_paths:
                 if img_path not in seen and img_path.exists():
                     found_images.append(img_path)
                     seen.add(img_path)
@@ -160,7 +162,7 @@ def resolve_image_paths(spine_files: List[Path], base_dir: Path) -> List[Path]:
 def build_cbz(images: List[Path], output_cbz: Path, comicinfo_xml: str = None):
     with zipfile.ZipFile(output_cbz, "w") as cbz:
         digits = len(str(len(images)))
-        for i, img_path in enumerate(images, 1):
+        for i, img_path in tqdm(enumerate(images, 1), total=len(images), desc="💾 Building CBZ"):
             ext = img_path.suffix
             name = f"{i:0{digits}d}{ext}"
             cbz.write(img_path, arcname=name)
