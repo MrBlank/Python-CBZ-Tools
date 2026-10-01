@@ -2,12 +2,11 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from tqdm import tqdm
 
 # --- VENV & DEPENDENCY MANAGEMENT (auto) ---
 VENV_DIR = Path("venv")
 VENV_PYTHON = VENV_DIR / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
-REQUIRED_PACKAGES = ["beautifulsoup4", "lxml"]
+REQUIRED_PACKAGES = ["beautifulsoup4", "lxml", "tqdm"]
 
 def in_virtualenv():
     return sys.prefix == str(VENV_DIR.resolve())
@@ -17,7 +16,7 @@ def setup_virtualenv():
         print("📦 Creating virtual environment...")
         subprocess.run([sys.executable, "-m", "venv", str(VENV_DIR)], check=True)
     try:
-        subprocess.run([str(VENV_PYTHON), "-c", "import bs4, lxml"], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run([str(VENV_PYTHON), "-c", "import bs4, lxml, tqdm"], check=True, stdout=subprocess.DEVNULL)
     except subprocess.CalledProcessError:
         print(f"📥 Installing dependencies: {', '.join(REQUIRED_PACKAGES)}...")
         subprocess.run([str(VENV_PYTHON), "-m", "pip", "install"] + REQUIRED_PACKAGES, check=True)
@@ -34,6 +33,7 @@ def ensure_env():
 
 ensure_env()
 
+from tqdm import tqdm
 import zipfile
 import tempfile
 from bs4 import BeautifulSoup
