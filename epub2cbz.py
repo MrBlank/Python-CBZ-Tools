@@ -2,7 +2,6 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from tqdm import tqdm
 
 # --- VENV & DEPENDENCY MANAGEMENT (auto) ---
 VENV_DIR = Path("venv")
@@ -34,6 +33,7 @@ def ensure_env():
 
 ensure_env()
 
+from tqdm import tqdm
 import zipfile
 import tempfile
 from bs4 import BeautifulSoup
