@@ -147,7 +147,7 @@ def resolve_image_paths(spine_files: List[Path], base_dir: Path) -> List[Path]:
         with open(spine_path, "rb") as f:
             soup = BeautifulSoup(f, features="xml")
             img_paths = set()
-            for tag_name, tag_meta in [("img","src"), ("image","href")]:
+            for tag_name, tag_meta in [("img","src"), ("image","href"), ("image","xlink:href")]:
                 for tag in soup.find_all(tag_name, href=(tag_meta=="href")):
                     img_name = tag.get(tag_meta)
                     if img_name:
