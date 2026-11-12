@@ -141,13 +141,13 @@ def resolve_image_paths(spine_files: List[Path], base_dir: Path) -> List[Path]:
     found_images = []
     seen = set()
 
-    for spine_path in spine_files:
+    for spine_path in tqdm(spine_files, desc="🖼️ Resolving Image Paths"):
         if not spine_path.exists():
             continue
         with open(spine_path, "rb") as f:
             soup = BeautifulSoup(f, features="xml")
             img_paths = set()
-            for tag_name, tag_meta in [("img","src"), ("image","href")]:
+            for tag_name, tag_meta in [("img","src"), ("image","href"), ("image","xlink:href")]:
                 for tag in soup.find_all(tag_name, href=(tag_meta=="href")):
                     img_name = tag.get(tag_meta)
                     if img_name:
@@ -197,8 +197,11 @@ def process_epub(epub_path: Path, output_dir: Path, reading_direction: str = "Le
             return
 
         manifest, spine, cover_href, metadata = parse_opf(opf_path)
-        spine_files = [opf_path.parent / manifest[item] for item in spine if item in manifest]
+        spine_files = [opf_path.parent / manifest[item] for item in tqdm(spine, desc="📖 Parsing Spine") if item in manifest]
         images = resolve_image_paths(spine_files, tmpdir)
+        if len(images) == 0:
+            print(f"❌ ERROR: No image paths resolved in {epub_path.name}")
+            return
 
         # Prefer reading direction from EPUB metadata if present
         rd = metadata.get('reading_direction', reading_direction)
